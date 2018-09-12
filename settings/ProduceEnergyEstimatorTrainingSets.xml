@@ -1,0 +1,95 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <UseLArCaloHits>true</UseLArCaloHits>
+        <GeometryFileName>GEOMETRY_FILE</GeometryFileName>
+        <EventFileNameList>EVENT_FILES</EventFileNameList>
+    </algorithm>
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+    
+    <!--algorithm type = "LArVisualMonitoring">
+        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
+        <ShowDetector>true</ShowDetector>
+    </algorithm-->
+
+    <algorithm type = "LArMaster">
+        <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
+        <NuSettingsFile>PandoraSettings_Neutrino_MicroBooNE.xml</NuSettingsFile>
+        <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
+        <StitchingTools>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
+        </StitchingTools>
+        <CosmicRayTaggingTools>
+            <tool type = "LArCosmicRayTagging"/>
+        </CosmicRayTaggingTools>
+        <SliceIdTools>
+            <tool type = "LArNeutrinoId">
+                <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
+                <SvmName>NeutrinoId</SvmName>
+            </tool>
+        </SliceIdTools>
+        <InputHitListName>Input</InputHitListName>
+        <InputMCParticleListName>Input</InputMCParticleListName>
+        <PassMCParticlesToWorkerInstances>false</PassMCParticlesToWorkerInstances>
+        <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
+        <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
+        <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
+        <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
+    </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <PfoListName>RecreatedPfos</PfoListName>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+    
+    <!--algorithm type = "LArVisualMonitoring">
+        <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowDetector>true</ShowDetector>
+    </algorithm-->
+    
+    <algorithm type = "LArAnalysisNtuple">
+        <PfoListName>RecreatedPfos</PfoListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <NtupleOutputFile>OUTPUT_DIR/PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId.root</NtupleOutputFile>
+        <PlotsOutputFile>OUTPUT_DIR/PandoraPlots.root</PlotsOutputFile>
+        <TmpOutputFile>OUTPUT_DIR/Tmp.root</TmpOutputFile>
+        <NtupleTreeName>PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId</NtupleTreeName>
+        <NtupleTreeTitle>PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId</NtupleTreeTitle>
+        <FileIdentifier>0</FileIdentifier>
+        <AppendNtuple>false</AppendNtuple>
+        <MinUnmatchedMcParticleEnergy>0.f</MinUnmatchedMcParticleEnergy>
+        <FiducialCutLowMargins>10.f 20.f 10.f</FiducialCutLowMargins>
+        <FiducialCutHighMargins>10.f 20.f 10.f</FiducialCutHighMargins>
+        <NtupleTools>
+            <tool type = "LArCommonNtupleTool"/>
+            <tool type = "LArCommonMCNtupleTool">
+                <TwoDCaloHitListName>CaloHitList2D</TwoDCaloHitListName> 
+            </tool>
+            <tool type = "LArEnergyEstimatorNtupleTool">
+                <WriteEnergiesToNtuple>false</WriteEnergiesToNtuple>
+                <UseParticleId>false</UseParticleId>
+                <TrainingSetMode>true</TrainingSetMode>
+                <MakePlots>true</MakePlots>
+            </tool>
+        </NtupleTools>
+    </algorithm>
+</pandora>
