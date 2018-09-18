@@ -4,6 +4,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 LIGHT_GREY='\033[0;37m'
 NORMAL='\033[0m'
+LIGHT_GREY_BOLD='\033[1;37m'
 
 function EchoMessage() {
     local message=$1
@@ -36,6 +37,30 @@ function RunCommand() {
     fi
 }
 
+# Issue welcome
+cat << "EOF"
+                                          ,--,                        
+                                       ,---.'|                        
+   ,---,                               |   | :       ,---,.    ,---,. 
+  '  .' \                              :   : |     ,'  .' |  ,'  .' | 
+ /  ;    '.          ,---,             |   ' :   ,---.'   |,---.'   | 
+:  :       \     ,-+-. /  |            ;   ; '   |   |   .'|   |   .' 
+:  |   /\   \   ,--.'|'   |  ,--.--.   '   | |__ :   :  |-,:   :  |-, 
+|  :  ' ;.   : |   |  ,"' | /       \  |   | :.'|:   |  ;/|:   |  ;/| 
+|  |  ;/  \   \|   | /  | |.--.  .-. | '   :    ;|   :   .'|   :   .' 
+'  :  | \  \ ,'|   | |  | | \__\/: . . |   |  ./ |   |  |-,|   |  |-, 
+|  |  '  '--'  |   | |  |/  ," .--.; | ;   : ;   '   :  ;/|'   :  ;/| 
+|  :  :        |   | |--'  /  /  ,.  | |   ,/    |   |    \|   |    \ 
+|  | ,'        |   |/     ;  :   .'   \'---'     |   :   .'|   :   .' 
+`--''          '---'      |  ,     .-./          |   | ,'  |   | ,'   
+                           `--`---'              `----'    `----'    
+
+EOF
+
+EchoMessage "MicroBooNE LEE analysis steering scripts" $LIGHT_GREY_BOLD
+EchoMessage "Author: Jack Anthony <anthony@hep.phy.cam.ac.uk>\n" $LIGHT_GREY
+sleep 2
+
 # Set up
 cwd=$(pwd)
 outputDir="outputs"
@@ -60,4 +85,9 @@ mkdir -p $outputDir
 # Produce the energy estimator training sets
 energyEstimatorTrainingDir=$outputDir/EnergyEstimatorTrainingOutput
 EchoMessage "Writing energy estimator training sets: ${LIGHT_GREY}$energyEstimatorTrainingDir"
-RunCommand "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n200" $logFile $errFile
+RunCommand "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n50" $logFile $errFile
+
+#mkdir $energyEstimatorTrainingDir
+#valgrind --tool=massif pandora -i ./.settings.tmp.xml -n160 -pN -rFull
+#valgrind --num-callers=30 --suppressions=$ROOTSYS/etc/valgrind-root.supp pandora -i ./.settings.tmp.xml -n1 -pN -rFull
+
