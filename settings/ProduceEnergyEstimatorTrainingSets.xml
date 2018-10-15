@@ -61,14 +61,12 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
     
-    <!--algorithm type = "LArVisualMonitoring">
-        <ShowCurrentPfos>true</ShowCurrentPfos>
-        <ShowDetector>true</ShowDetector>
-    </algorithm-->
-    
     <algorithm type = "LArAnalysisNtuple">
-        <PfoListName>RecreatedPfos</PfoListName>
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
+        <PrintValidation>true</PrintValidation>
+        <ProduceAllOutcomes>false</ProduceAllOutcomes>
+        <PfoListName>RecreatedPfos</PfoListName>
         <NtupleOutputFile>OUTPUT_DIR/PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId.root</NtupleOutputFile>
         <PlotsOutputFile>OUTPUT_DIR/PandoraPlots.root</PlotsOutputFile>
         <TmpOutputFile>OUTPUT_DIR/Tmp.root</TmpOutputFile>
@@ -76,20 +74,26 @@
         <NtupleTreeTitle>PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId</NtupleTreeTitle>
         <FileIdentifier>0</FileIdentifier>
         <AppendNtuple>false</AppendNtuple>
-        <MinUnmatchedMcParticleEnergy>0.f</MinUnmatchedMcParticleEnergy>
         <FiducialCutLowMargins>10.f 20.f 10.f</FiducialCutLowMargins>
         <FiducialCutHighMargins>10.f 20.f 10.f</FiducialCutHighMargins>
+        <EventValidationTools>
+            <tool type = "LArEventValidationTool"></tool>
+        </EventValidationTools>
         <NtupleTools>
-            <tool type = "LArCommonNtupleTool"/>
-            <tool type = "LArCommonMCNtupleTool">
-                <TwoDCaloHitListName>CaloHitList2D</TwoDCaloHitListName> 
-            </tool>
+            <tool type = "LArCommonNtupleTool">
+            <tool type = "LArCommonMCNtupleTool"> 
             <tool type = "LArEnergyEstimatorNtupleTool">
                 <WriteEnergiesToNtuple>false</WriteEnergiesToNtuple>
                 <UseParticleId>false</UseParticleId>
-                <TrainingSetMode>true</TrainingSetMode>
-                <MakePlots>true</MakePlots>
+                <TrainingSetMode>false</TrainingSetMode>
             </tool>
+            <tool type = "LArParticleIdNtupleTool"/>
+            <tool type = "LArEnergyEstimatorNtupleTool">
+                <WriteEnergiesToNtuple>true</WriteEnergiesToNtuple>
+                <UseParticleId>true</UseParticleId>
+                <TrainingSetMode>false</TrainingSetMode>
+            </tool>
+            <tool type = "LArLeeAnalysisNtupleTool"/>
         </NtupleTools>
     </algorithm>
 </pandora>
