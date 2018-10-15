@@ -1,1 +1,1 @@
-# RetiNue | MicroBooNE electron selection analysis
+# RetiNue | MicroBooNE nue selection analysis steering scripts
