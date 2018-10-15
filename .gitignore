@@ -1,3 +1,4 @@
 archive/
 *.log
 .settings.tmp.xml
+Tmp.root
