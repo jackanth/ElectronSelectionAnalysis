@@ -37,8 +37,7 @@ function RunCommand() {
 function RunCommandAndPipe() {
     local cmd=$1
     local logFile=$2
-    local errFile=$3
-    local fullCmd="$cmd > $logFile 2> $errFile"
+    local fullCmd="$cmd &> $logFile"
 
     if ! eval "$fullCmd"; then
         EchoError "Command failed: ${LIGHT_GREY}$fullCmd"
@@ -46,39 +45,35 @@ function RunCommandAndPipe() {
     fi
 }
 
-# # Issue welcome
-# cat << "EOF"
-#                                           ,--,                        
-#                                        ,---.'|                        
-#    ,---,                               |   | :       ,---,.    ,---,. 
-#   '  .' \                              :   : |     ,'  .' |  ,'  .' | 
-#  /  ;    '.          ,---,             |   ' :   ,---.'   |,---.'   | 
-# :  :       \     ,-+-. /  |            ;   ; '   |   |   .'|   |   .' 
-# :  |   /\   \   ,--.'|'   |  ,--.--.   '   | |__ :   :  |-,:   :  |-, 
-# |  :  ' ;.   : |   |  ,"' | /       \  |   | :.'|:   |  ;/|:   |  ;/| 
-# |  |  ;/  \   \|   | /  | |.--.  .-. | '   :    ;|   :   .'|   :   .' 
-# '  :  | \  \ ,'|   | |  | | \__\/: . . |   |  ./ |   |  |-,|   |  |-, 
-# |  |  '  '--'  |   | |  |/  ," .--.; | ;   : ;   '   :  ;/|'   :  ;/| 
-# |  :  :        |   | |--'  /  /  ,.  | |   ,/    |   |    \|   |    \ 
-# |  | ,'        |   |/     ;  :   .'   \'---'     |   :   .'|   :   .' 
-# `--''          '---'      |  ,     .-./          |   | ,'  |   | ,'   
-#                            `--`---'              `----'    `----'    
+# Issue welcome
+cat << "EOF"
+,-.----.                 ___                                                  
+\    /  \              ,--.'|_    ,--,                                        
+;   :    \             |  | :,' ,--.'|         ,---,          ,--,            
+|   | .\ :             :  : ' : |  |,      ,-+-. /  |       ,'_ /|            
+.   : |: |    ,---.  .;__,'  /  `--'_     ,--.'|'   |  .--. |  | :    ,---.   
+|   |  \ :   /     \ |  |   |   ,' ,'|   |   |  ,"' |,'_ /| :  . |   /     \  
+|   : .  /  /    /  |:__,'| :   '  | |   |   | /  | ||  ' | |  . .  /    /  | 
+;   | |  \ .    ' / |  '  : |__ |  | :   |   | |  | ||  | ' |  | | .    ' / | 
+|   | ;\  \'   ;   /|  |  | '.'|'  : |__ |   | |  |/ :  | : ;  ; | '   ;   /| 
+:   ' | \.''   |  / |  ;  :    ;|  | '.'||   | |--'  '  :  `--'   \'   |  / | 
+:   : :-'  |   :    |  |  ,   / ;  :    ;|   |/      :  ,      .-./|   :    | 
+|   |.'     \   \  /    ---`-'  |  ,   / '---'        `--`----'     \   \  /  
+`---'        `----'              ---`-'                              `----'  
+EOF
 
-# EOF
-
-# EchoMessage "MicroBooNE LEE analysis steering scripts" $LIGHT_GREY_BOLD
-# EchoMessage "Author: Jack Anthony <anthony@hep.phy.cam.ac.uk>\n" $LIGHT_GREY
-# sleep 2
+EchoMessage "Retinue | MicroBooNE electron selection analysis steering scripts" $LIGHT_GREY_BOLD
+EchoMessage "Author: Jack Anthony <anthony@hep.phy.cam.ac.uk>\n" $LIGHT_GREY
+sleep 2
 
 # Set up
 cwd=$(pwd)
 outputDir="outputs"
 archiveDir="archive"
 logFile="out.log"
-errFile="err.log"
 
 EchoMessage "Running LEE analysis with output dir ${LIGHT_GREY}$cwd/$outputDir"
-EchoMessage "Writing stdout to ${LIGHT_GREY}$logFile${NORMAL} and stderr to ${LIGHT_GREY}$errFile${NORMAL}"
+EchoMessage "Writing stdout to ${LIGHT_GREY}$logFile${NORMAL}"
 
 # Archive any existing output directory
 if [ -d "$outputDir" ]; then
@@ -94,7 +89,7 @@ mkdir -p $outputDir
 # Produce the energy estimator training sets
 energyEstimatorTrainingDir=$outputDir/EnergyEstimatorTrainingOutput
 EchoMessage "Writing energy estimator training sets: ${LIGHT_GREY}$energyEstimatorTrainingDir"
-RunCommand "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n10" $logFile $errFile
+RunCommandAndPipe "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n10" $logFile
 
 #mkdir $energyEstimatorTrainingDir
 #valgrind --tool=massif pandora -i ./.settings.tmp.xml -n10 -pN -rFull
