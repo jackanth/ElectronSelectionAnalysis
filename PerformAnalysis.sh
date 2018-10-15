@@ -46,23 +46,26 @@ function RunCommandAndPipe() {
 }
 
 # Issue welcome
-cat << "EOF"
-,-.----.                 ___                                                  
-\    /  \              ,--.'|_    ,--,                                        
-;   :    \             |  | :,' ,--.'|         ,---,          ,--,            
-|   | .\ :             :  : ' : |  |,      ,-+-. /  |       ,'_ /|            
-.   : |: |    ,---.  .;__,'  /  `--'_     ,--.'|'   |  .--. |  | :    ,---.   
-|   |  \ :   /     \ |  |   |   ,' ,'|   |   |  ,"' |,'_ /| :  . |   /     \  
-|   : .  /  /    /  |:__,'| :   '  | |   |   | /  | ||  ' | |  . .  /    /  | 
-;   | |  \ .    ' / |  '  : |__ |  | :   |   | |  | ||  | ' |  | | .    ' / | 
-|   | ;\  \'   ;   /|  |  | '.'|'  : |__ |   | |  |/ :  | : ;  ; | '   ;   /| 
-:   ' | \.''   |  / |  ;  :    ;|  | '.'||   | |--'  '  :  `--'   \'   |  / | 
-:   : :-'  |   :    |  |  ,   / ;  :    ;|   |/      :  ,      .-./|   :    | 
-|   |.'     \   \  /    ---`-'  |  ,   / '---'        `--`----'     \   \  /  
-`---'        `----'              ---`-'                              `----'  
+cat << "EOF"                                                                          
+                                                  ,--.                         
+,-.----.                 ___                    ,--.'|                         
+\    /  \              ,--.'|_    ,--,      ,--,:  : |                         
+;   :    \             |  | :,' ,--.'|   ,`--.'`|  ' :         ,--,            
+|   | .\ :             :  : ' : |  |,    |   :  :  | |       ,'_ /|            
+.   : |: |    ,---.  .;__,'  /  `--'_    :   |   \ | :  .--. |  | :    ,---.   
+|   |  \ :   /     \ |  |   |   ,' ,'|   |   : '  '; |,'_ /| :  . |   /     \  
+|   : .  /  /    /  |:__,'| :   '  | |   '   ' ;.    ;|  ' | |  . .  /    /  | 
+;   | |  \ .    ' / |  '  : |__ |  | :   |   | | \   ||  | ' |  | | .    ' / | 
+|   | ;\  \'   ;   /|  |  | '.'|'  : |__ '   : |  ; .':  | : ;  ; | '   ;   /| 
+:   ' | \.''   |  / |  ;  :    ;|  | '.'||   | '`--'  '  :  `--'   \'   |  / | 
+:   : :-'  |   :    |  |  ,   / ;  :    ;'   : |      :  ,      .-./|   :    | 
+|   |.'     \   \  /    ---`-'  |  ,   / ;   |.'       `--`----'     \   \  /  
+`---'        `----'              ---`-'  '---'                        `----'   
+                                                                               
+
 EOF
 
-EchoMessage "Retinue | MicroBooNE electron selection analysis steering scripts" $LIGHT_GREY_BOLD
+EchoMessage "RetiNue | MicroBooNE nue selection analysis steering scripts" $LIGHT_GREY_BOLD
 EchoMessage "Author: Jack Anthony <anthony@hep.phy.cam.ac.uk>\n" $LIGHT_GREY
 sleep 2
 
@@ -72,7 +75,7 @@ outputDir="outputs"
 archiveDir="archive"
 logFile="out.log"
 
-EchoMessage "Running LEE analysis with output dir ${LIGHT_GREY}$cwd/$outputDir"
+EchoMessage "Running analysis with output dir ${LIGHT_GREY}$cwd/$outputDir"
 EchoMessage "Writing stdout to ${LIGHT_GREY}$logFile${NORMAL}"
 
 # Archive any existing output directory
