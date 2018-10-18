@@ -69,6 +69,12 @@ EchoMessage "RetiNue | MicroBooNE nue selection analysis steering scripts" $LIGH
 EchoMessage "Author: Jack Anthony <anthony@hep.phy.cam.ac.uk>\n" $LIGHT_GREY
 sleep 2
 
+# Config
+archive=false
+produceEnergyEstimatorTrainingSets=false
+trainRecombinationCorrection=false
+writeNtuple=true
+
 # Set up
 cwd=$(pwd)
 outputDir="outputs"
@@ -79,22 +85,54 @@ EchoMessage "Running analysis with output dir ${LIGHT_GREY}$cwd/$outputDir"
 EchoMessage "Writing stdout to ${LIGHT_GREY}$logFile${NORMAL}"
 
 # Archive any existing output directory
-if [ -d "$outputDir" ]; then
-    mkdir -p $archiveDir
-    timestamp=$(date +%s)
-    archivedOutputDir=$archiveDir/${outputDir}_$timestamp
-    mv $outputDir $archivedOutputDir
-    EchoWarning "Moved existing output directory to $archivedOutputDir"
+if $archive; then
+    if [ -d "$outputDir" ]; then
+        mkdir -p $archiveDir
+        timestamp=$(date +%s)
+        archivedOutputDir=$archiveDir/${outputDir}_$timestamp
+        mv $outputDir $archivedOutputDir
+        EchoWarning "Moved existing output directory to $archivedOutputDir"
+    fi
+else
+    EchoWarning "Skipping stage: archive"
 fi
 
 mkdir -p $outputDir 
 
-# Produce the energy estimator training sets
 energyEstimatorTrainingDir=$outputDir/EnergyEstimatorTrainingOutput
-EchoMessage "Writing energy estimator training sets: ${LIGHT_GREY}$energyEstimatorTrainingDir"
-RunCommandAndPipe "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n10" $logFile
 
-#mkdir $energyEstimatorTrainingDir
-#valgrind --tool=massif pandora -i ./.settings.tmp.xml -n10 -pN -rFull
-#valgrind --num-callers=30 --log-file=valgrind.log --suppressions=$ROOTSYS/etc/valgrind-root.supp pandora -i ./.settings.tmp.xml -n10 -pN -rFull
+if $produceEnergyEstimatorTrainingSets; then
+    # Produce the energy estimator training sets
+    rm -r $energyEstimatorTrainingDir
+    EchoMessage "Writing energy estimator training sets: ${LIGHT_GREY}$energyEstimatorTrainingDir"
+    RunCommandAndPipe "pndr event_lists/events.txt $energyEstimatorTrainingDir ./settings/ProduceEnergyEstimatorTrainingSets.xml -n1000" $logFile
+    EchoMessage "Wrote energy estimator training sets to ${LIGHT_GREY}$energyEstimatorTrainingDir"
+else
+    EchoWarning "Skipping stage: produce energy estimator training sets"
+fi
 
+trainingOutput="PandoraNtuple_EnergyEstimator_TrainingOutput_NoParticleId.root"
+
+if $trainRecombinationCorrection; then
+    # Train the recombination correction
+    EchoMessage "Training energy estimator recombination correction: ${LIGHT_GREY}$trainingOutput"
+    RunCommandAndPipe "rtq FitBirksData.c \\\"$energyEstimatorTrainingDir/PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId.root\\\" \\\"PandoraNtuple_EnergyEstimator_TrainingSet_NoParticleId\\\" \\\"$energyEstimatorTrainingDir\\\" \\\"$trainingOutput\\\"" $logFile
+    EchoMessage "Wrote recombination correction data to ${LIGHT_GREY}$energyEstimatorTrainingDir/$trainingOutput"
+else
+    EchoWarning "Skipping stage: train recombination correction"
+fi
+
+if $writeNtuple; then
+    # Produce the ntuple
+    ntupleDir=$outputDir/PandoraNtuple
+    rm -rf $ntupleDir
+    mkdir -p $ntupleDir
+    cp $energyEstimatorTrainingDir/$trainingOutput $ntupleDir/RecombinationCorrectionData.root
+    EchoMessage "Writing Pandora ntuple: ${LIGHT_GREY}$ntupleDir"
+    RunCommandAndPipe "pndr event_lists/events.txt $ntupleDir ./settings/ProduceNtuple.xml -n1000" $logFile
+    EchoMessage "Wrote Pandora ntuple to ${LIGHT_GREY}$ntupleDir"
+else
+    EchoWarning "Skipping stage: write ntuple"
+fi
+
+EchoMessage "${GREEN}RetiNue finished successfully"

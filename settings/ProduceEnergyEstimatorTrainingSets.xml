@@ -90,12 +90,6 @@
                 <MakePlots>true</MakePlots>
             </tool>
             <tool type = "LArParticleIdNtupleTool"/>
-            <tool type = "LArEnergyEstimatorNtupleTool">
-                <WriteEnergiesToNtuple>true</WriteEnergiesToNtuple>
-                <UseParticleId>true</UseParticleId>
-                <TrainingSetMode>false</TrainingSetMode>
-            </tool>
-            <tool type = "LArLeeAnalysisNtupleTool"/>
         </NtupleTools>
     </algorithm>
 </pandora>
